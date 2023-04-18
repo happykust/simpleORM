@@ -1,13 +1,13 @@
+#ifndef SIMPLEORM_CONNECTION_HPP
+
 #include "Exception.hpp"
 #include <cppconn/connection.h>
 #include <cppconn/driver.h>
 #include <string>
 #include <utility>
-#ifndef SIMPLEORM_CONNECTION_H
 
 namespace simpleOrm {
 
-    // Generic connection class
     class SimpleConnection {
     private:
         bool connected = false;
@@ -58,4 +58,4 @@ namespace simpleOrm {
 }// namespace simpleOrm
 
 
-#endif//SIMPLEORM_CONNECTION_H
+#endif//SIMPLEORM_CONNECTION_HPP

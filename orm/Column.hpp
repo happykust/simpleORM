@@ -1,11 +1,13 @@
-#ifndef SIMPLEORM_COLUMN_HЗЗ
-#define SIMPLEORM_COLUMN_HЗЗ
-
+#ifndef SIMPLEORM_COLUMN_HPP
+#define SIMPLEORM_COLUMN_HPP
 
 #include "Exception.hpp"
+#include <any>
 #include <ctime>
 #include <string>
 #include <utility>
+#include <variant>
+
 namespace simpleOrm {
 
     template<class Field>
@@ -40,19 +42,18 @@ namespace simpleOrm {
         throw SimpleOrmException(std::string("Field type is unsupported!"));
     }
 
-    template<class Field>
+    template<class T>
     class Column {
     private:
-        std::string column_name;
         std::string sql_type;
     public:
-        explicit Column(std::string column_name,
-                        Field field) : column_name(std::move(column_name)) {
-            sql_type = getColumnSQLType<field>();
+        std::string column_name;
+        explicit Column(std::string column_name) : column_name(std::move(column_name)) {
+            sql_type = getColumnSQLType<T>();
         }
     };
 
 }// namespace simpleOrm
 
 
-#endif//SIMPLEORM_COLUMN_HЗЗ
+#endif//SIMPLEORM_COLUMN_HPP

@@ -1,21 +1,31 @@
-#include "SimpleConnection.hpp"
+#ifndef SIMPLEORM_DATABASE_HPP
+#define SIMPLEORM_DATABASE_HPP
+
+#include <utility>
+
 #include "Statement.hpp"
 #include "Table.hpp"
-
-#ifndef SIMPLEORM_DATABASE_H
-#define SIMPLEORM_DATABASE_H
 
 namespace simpleOrm {
 
     class Database {
     private:
         SimpleConnection* connection;
+        std::vector<Table> tables;
+        bool auto_create = true;
     public:
         template<class... T>
-        explicit Database(SimpleConnection* connection, T... tables) : connection(connection) {}
+        explicit Database(
+                SimpleConnection* connection,
+                T... tables) : connection(connection), tables(tables...) {}
 
-        auto query(Table table) {
-            return nullptr;
+        template<class T>
+        TabledStatement<T> query(const Table& table) {
+            return {connection, table};
+        }
+
+        RawStatement raw_query(std::string sql_query) {
+            return RawStatement(connection, std::move(sql_query));
         }
 
         void drop_all() {
@@ -30,4 +40,4 @@ namespace simpleOrm {
 }// namespace simpleOrm
 
 
-#endif//SIMPLEORM_DATABASE_H
+#endif//SIMPLEORM_DATABASE_HPP

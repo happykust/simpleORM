@@ -1,42 +1,36 @@
+#include "orm/Database.hpp"
 #include "orm/Exception.hpp"
-#include "orm/SimpleConnection.hpp"
-
-#include <cppconn/resultset.h>
-#include <cppconn/statement.h>
 
 #include <iostream>
 
 using namespace std;
 using namespace simpleOrm;
 
+struct Book {
+    uint id;
+    std::string title;
+};
+
 int main() {
     cout << endl;
 
-    try {
-        sql::Statement *stmt;
-        sql::ResultSet *res;
+    SimpleConnection conn("127.0.0.1", "user", "pass", "db", "3306");
+    conn.connect();
 
-        SimpleConnection conn("127.0.0.1", "user", "pass", "db", "3306");
-        conn.connect();
+    Table table_book("books", vector<std::any>{
+                                      Column<uint>("id"),
+                                      Column<std::string>("title")});
 
-        stmt = conn.getConnection()->createStatement();
-        res = stmt->executeQuery("SELECT * FROM books");
-        while (res->next()) {
-            cout << "\t... MySQL replies: ";
-            /* Access column data by alias or column name */
-            cout << res->getString("title") << endl;
-            cout << "\t... MySQL says it again: ";
-            /* Access column data by numeric offset, 1 is the first column */
-            cout << res->rowsCount() << endl;
-        }
-        delete res;
-        delete stmt;
+    Database db(&conn, vector<Table>{table_book});
+    TabledResult result = db.query<Book>(table_book).all().execute();
 
-    } catch (sql::SQLException &e) {
-        throw simpleOrm::SimpleOrmException(e.what());
+    vector<Book> rows = result.rows();
+
+    for (int i = 0; i < result.count(); i++) {
+        cout << rows[i].title;
     }
 
-    cout << endl;
+    conn.disconnect();
 
-    return EXIT_SUCCESS;
+    cout << endl;
 }

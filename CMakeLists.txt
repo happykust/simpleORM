@@ -14,4 +14,4 @@ add_executable(simpleORM
         orm/Database.hpp
         orm/Column.hpp
         orm/Statement.hpp
-        orm/Transaction.hpp orm/sql/Create.cpp orm/sql/Create.h orm/sql/Drop.cpp orm/sql/Drop.h)
+        orm/Transaction.hpp orm/TabledResult.hpp)

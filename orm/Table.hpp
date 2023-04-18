@@ -3,23 +3,25 @@
 
 #include "Column.hpp"
 #include <any>
+#include <boost/type_index.hpp>
 #include <string>
 #include <utility>
+#include <variant>
 #include <vector>
 
 namespace simpleOrm {
 
     class Table {
-    private:
-        std::string table_name;
-        std::vector<Column<std::any>> columns;
-
     public:
+        std::vector<std::any> columns;
+        std::string table_name;
+
         template<class... T>
         explicit Table(
                 std::string table_name,
                 T... columns) : columns(columns...),
-                                table_name(std::move(table_name)) {}
+                                table_name(std::move(table_name)) {
+        }
     };
 
 }// namespace simpleOrm
