@@ -18,7 +18,7 @@ public:
         return {static_cast<uint>(std::stoi(id)), std::move(title)};
     }
 
-    static constexpr unsigned long int f() { return 2; }
+    static constexpr unsigned long int fieldsCount() { return 2; }
 };
 
 int main() {

@@ -76,7 +76,7 @@ namespace simpleOrm {
                     columns_values.push_back(result->getString(i));
                 }
 
-                rows.push_back(call(TableS::create, vectorToTuple<TableS::f()>(columns_values)));
+                rows.push_back(call(TableS::create, vectorToTuple<TableS::fieldsCount()>(columns_values)));
             }
 
             return rows;
