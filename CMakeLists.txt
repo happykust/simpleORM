@@ -1,13 +1,13 @@
-cmake_minimum_required(VERSION 3.25)
+cmake_minimum_required(VERSION 3.24)
 project(simpleORM)
 
 set(CMAKE_CXX_STANDARD 17)
 
-# add_library(simpleORM SHARED main.cpp)
+link_directories(${CMAKE_INCLUDE_CURRENT_DIR})
+link_libraries(mysqlcppconn)
+
 add_executable(simpleORM
         main.cpp
-        utils/DateTime.cpp
-        utils/DateTime.h
         orm/Table.hpp
         orm/SimpleConnection.hpp
         orm/Exception.hpp

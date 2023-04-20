@@ -40,6 +40,8 @@ namespace simpleOrm {
             } catch (sql::SQLException &e) {
                 throw SimpleOrmException(std::string("Couldn't connect to database: ") + e.what());
             }
+
+            std::cout << "[SimpleORM] Connected to database '" << this->database << "'" << std::endl;
         };
 
         void disconnect() {

@@ -12,9 +12,7 @@ namespace simpleOrm {
 
     template<class Field>
     std::string getColumnSQLType() {
-        if (std::is_same_v<Field, std::string> ||
-            std::is_same_v<Field, char *> ||
-            std::is_same_v<Field, char const *>)
+        if (std::is_same_v<Field, std::string>)
             return "TEXT";
         else if (std::is_integral_v<Field>) {
 
@@ -31,7 +29,7 @@ namespace simpleOrm {
             else if constexpr (std::is_same_v<Field, int32_t>)
                 return "INTEGER";
             else if constexpr (std::is_same_v<Field, uint32_t>)
-                return "INTEGER UNSIGNED";
+                return "INT UNSIGNED";
             else if constexpr (std::is_same_v<Field, int64_t>)
                 return "BIGINT";
             else if constexpr (std::is_same_v<Field, uint64_t>)
@@ -40,6 +38,12 @@ namespace simpleOrm {
             return "DATETIME";
         }
         throw SimpleOrmException(std::string("Field type is unsupported!"));
+    }
+
+    auto getCPPTypeFromSQL(const std::string& sql_type) {
+        if (sql_type == "TEXT") {
+            return std::string();
+        }
     }
 
     template<class T>

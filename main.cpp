@@ -2,13 +2,23 @@
 #include "orm/Exception.hpp"
 
 #include <iostream>
+#include <utility>
 
 using namespace std;
 using namespace simpleOrm;
 
-struct Book {
+class Book {
+public:
     uint id;
     std::string title;
+
+    Book(uint id, std::string title) : id(id), title(std::move(title)) {}
+
+    static Book create(std::string id, std::string title) {
+        return {static_cast<uint>(std::stoi(id)), std::move(title)};
+    }
+
+    static constexpr unsigned long int f() { return 2; }
 };
 
 int main() {
@@ -27,7 +37,7 @@ int main() {
     vector<Book> rows = result.rows();
 
     for (int i = 0; i < result.count(); i++) {
-        cout << rows[i].title;
+        cout << rows[i].title << endl;
     }
 
     conn.disconnect();
