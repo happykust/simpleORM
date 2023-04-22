@@ -13,7 +13,7 @@ namespace simpleOrm {
 
     class Table {
     public:
-        std::vector<std::any> columns;
+        std::vector<Column> columns;
         std::string table_name;
 
         template<class... T>

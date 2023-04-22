@@ -68,10 +68,12 @@ namespace simpleOrm {
             rows.reserve(result->rowsCount());
 
             while (result->next()) {
-                std::vector<std::string> columns_values;
-                columns_values.reserve(result->getMetaData()->getColumnCount());
+                const int column_count = result->getMetaData()->getColumnCount();
 
-                for (int i = 1; i <= result->getMetaData()->getColumnCount(); i++) {
+                std::vector<std::string> columns_values;
+                columns_values.reserve(column_count);
+
+                for (int i = 1; i <= column_count; i++) {
                     columns_values.push_back(result->getString(i));
                 }
 

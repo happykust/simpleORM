@@ -28,12 +28,45 @@ namespace simpleOrm {
             return RawStatement(connection, std::move(sql_query));
         }
 
-        void drop_all() {
-
+        void drop_tables() {
+            for (auto& table : tables) {
+                try {
+                    stmt = connection->getConnection()->createStatement();
+                    stmt->execute("DROP TABLE IF EXISTS " + table.table_name);
+                } catch (sql::SQLException &e) {
+                    if (e.what() != std::string("")) {
+                        throw SimpleOrmException(e.what());
+                    }
+                }
+            }
         }
 
-        void create_all() {
+        void create_tables() {
+            if (!auto_create) {
+                return ;
+            }
+            for (auto& table : tables) {
 
+                std::string query = "CREATE TABLE IF NOT EXISTS " + table.table_name + " (";
+                std::string pk;
+
+                for (auto& column : table.columns) {
+                    query += column.column_name + " " + column.sql_type + ", ";
+                    if (column.primary_key) {
+                        pk = "PRIMARY KEY (" + column.column_name + ")";
+                    }
+                }
+                query += pk + ")";
+
+                try {
+                    stmt = connection->getConnection()->createStatement();
+                    stmt->execute(query);
+                } catch (sql::SQLException &e) {
+                    if (e.what() != std::string("")) {
+                        throw SimpleOrmException(e.what());
+                    }
+                }
+            }
         }
     };
 

@@ -11,7 +11,7 @@ namespace simpleOrm {
     private:
         std::string e_message;
     public:
-        explicit SimpleOrmException(std::string  message) : e_message(std::move(message)) {}
+        explicit SimpleOrmException(std::string message) : e_message(std::move(message)) {}
         virtual const char* what() const noexcept override {
             return e_message.c_str();
         }

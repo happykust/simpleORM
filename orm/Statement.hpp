@@ -32,18 +32,19 @@ namespace simpleOrm {
 
     public:
         TabledStatementFinal(SimpleConnection *connection,
-                             Table  table,
+                             Table table,
                              StatementMaker maker) : Statement(connection),
                                                      table(std::move(table)),
-                                                     maker(std::move(maker)){}
+                                                     maker(std::move(maker)) {}
 
-        TabledResult<T> execute() {
+        void execute() {
             try {
                 stmt = connection->getConnection()->createStatement();
                 res = stmt->executeQuery(maker.makeQuery());
-                return TabledResult<T>(table, res);
             } catch (sql::SQLException &e) {
-                throw SimpleOrmException(e.what());
+                if (e.what() != std::string("")) {
+                    throw SimpleOrmException(e.what());
+                }
             }
         }
     };
@@ -55,7 +56,7 @@ namespace simpleOrm {
         StatementMaker maker;
 
     public:
-        TabledStatement(SimpleConnection *connection, const Table& table) : Statement(connection), table(table), maker(table) {}
+        TabledStatement(SimpleConnection *connection, const Table &table) : Statement(connection), table(table), maker(table) {}
 
         TabledResult<T> execute() {
             try {
@@ -67,7 +68,7 @@ namespace simpleOrm {
             }
         }
 
-        TabledStatement where(const std::string& condition_string) {
+        TabledStatement where(const std::string &condition_string) {
             maker.add_where(condition_string);
             return *this;
         }
@@ -82,12 +83,19 @@ namespace simpleOrm {
             return *this;
         }
 
-        TabledStatement join(const Table& join_table, const std::string& on_string) {
-            maker.add_join(join_table, on_string);
-            return *this;
+        TabledStatementFinal<T> create(const std::string& values) {
+            maker.call_create(values);
+            return TabledStatementFinal<T>(connection, table, maker);
         }
 
-        TabledStatementFinal<T> update() {
+        TabledStatementFinal<T> update(const std::string& update_string, const std::string& condition) {
+            maker.call_update(update_string, condition);
+            return TabledStatementFinal<T>(connection, table, maker);
+        }
+
+        TabledStatementFinal<T> remove() {
+            maker.call_remove();
+            return TabledStatementFinal<T>(connection, table, maker);
         }
     };
 
