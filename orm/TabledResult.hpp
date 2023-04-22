@@ -68,7 +68,6 @@ namespace simpleOrm {
             rows.reserve(result->rowsCount());
 
             while (result->next()) {
-                // t columns_values_tuple_ready;
                 std::vector<std::string> columns_values;
                 columns_values.reserve(result->getMetaData()->getColumnCount());
 

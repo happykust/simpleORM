@@ -32,7 +32,7 @@ int main() {
                                       Column<std::string>("title")});
 
     Database db(&conn, vector<Table>{table_book});
-    TabledResult result = db.query<Book>(table_book).all().execute();
+    TabledResult result = db.query<Book>(table_book).limit(1).execute();
 
     vector<Book> rows = result.rows();
 
