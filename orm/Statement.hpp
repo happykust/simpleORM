@@ -28,23 +28,22 @@ namespace simpleOrm {
     class TabledStatementFinal : public Statement {
     private:
         Table table;
-        StatementMaker maker;
+        StatementMaker *maker;
 
     public:
         TabledStatementFinal(SimpleConnection *connection,
                              Table table,
-                             StatementMaker maker) : Statement(connection),
-                                                     table(std::move(table)),
-                                                     maker(std::move(maker)) {}
+                             StatementMaker *maker) : Statement(connection),
+                                                     table(std::move(table)) {
+            this->maker = maker;
+        }
 
         void execute() {
             try {
                 stmt = connection->getConnection()->createStatement();
-                res = stmt->executeQuery(maker.makeQuery());
+                stmt->execute(maker->makeQuery());
             } catch (sql::SQLException &e) {
-                if (e.what() != std::string("")) {
-                    throw SimpleOrmException(e.what());
-                }
+                throw SimpleOrmException(e.what());
             }
         }
     };
@@ -85,17 +84,18 @@ namespace simpleOrm {
 
         TabledStatementFinal<T> create(const std::string& values) {
             maker.call_create(values);
-            return TabledStatementFinal<T>(connection, table, maker);
+            maker.makeQuery();
+            return TabledStatementFinal<T>(connection, table, &maker);
         }
 
         TabledStatementFinal<T> update(const std::string& update_string, const std::string& condition) {
             maker.call_update(update_string, condition);
-            return TabledStatementFinal<T>(connection, table, maker);
+            return TabledStatementFinal<T>(connection, table, &maker);
         }
 
         TabledStatementFinal<T> remove() {
             maker.call_remove();
-            return TabledStatementFinal<T>(connection, table, maker);
+            return TabledStatementFinal<T>(connection, table, &maker);
         }
     };
 
@@ -109,6 +109,8 @@ namespace simpleOrm {
 
         sql::ResultSet *execute() {
             try {
+                delete res;
+                delete stmt;
                 stmt = connection->getConnection()->createStatement();
                 res = stmt->executeQuery(sql);
                 return res;

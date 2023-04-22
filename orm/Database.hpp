@@ -51,10 +51,12 @@ namespace simpleOrm {
                 std::string pk;
 
                 for (auto& column : table.columns) {
-                    query += column.column_name + " " + column.sql_type + ", ";
+                    query += column.column_name + " " + column.sql_type;
                     if (column.primary_key) {
                         pk = "PRIMARY KEY (" + column.column_name + ")";
+                        query += " auto_increment";
                     }
+                    query += ", ";
                 }
                 query += pk + ")";
 

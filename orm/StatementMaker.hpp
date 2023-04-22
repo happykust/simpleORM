@@ -75,11 +75,11 @@ namespace simpleOrm {
             if (used_where) {
                 query += " WHERE " + where_condition;
             }
-            if (used_offset) {
-                query += " OFFSET " + std::to_string(offset);
-            }
             if (used_limit) {
                 query += " LIMIT " + std::to_string(limit);
+            }
+            if (used_offset) {
+                query += " OFFSET " + std::to_string(offset);
             }
 
             return query;

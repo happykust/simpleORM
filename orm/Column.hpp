@@ -12,7 +12,7 @@
 namespace simpleOrm {
 
     std::string getColumnSQLType(const std::string& type_name) {
-        if (type_name == "char*")
+        if (type_name == "char*" || "std::__cxx11::basic_string" == type_name.substr(0, 24))
             return "TEXT";
 
         if (type_name == "bool")
